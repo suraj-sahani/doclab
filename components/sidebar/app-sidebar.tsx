@@ -2,10 +2,10 @@
 
 import * as React from "react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavSecondary } from "@/components/nav-secondary";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from "@/components/sidebar/nav-main";
+import { NavProjects } from "@/components/sidebar/nav-projects";
+import { NavSecondary } from "@/components/sidebar/nav-secondary";
+import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -29,6 +29,7 @@ import {
   CommandIcon,
 } from "@hugeicons/core-free-icons";
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 const data = {
   user: {
@@ -154,6 +155,9 @@ const data = {
   ],
 };
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user, isLoaded } = useUser();
+  console.dir({ user, isLoaded });
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -174,14 +178,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+
+      {!isLoaded ? (
+        "Loading.."
+      ) : (
+        <>
+          <SidebarContent>
+            <NavMain items={data.navMain} />
+            <NavProjects projects={data.projects} />
+            <NavSecondary items={data.navSecondary} className="mt-auto" />
+          </SidebarContent>
+          <SidebarFooter>
+            <NavUser
+              user={{
+                email: user?.emailAddresses[0]?.emailAddress || "",
+                first_name: user?.firstName || "",
+                last_name: user?.lastName || "",
+                imageUrl: user?.imageUrl || "",
+              }}
+            />
+          </SidebarFooter>
+        </>
+      )}
     </Sidebar>
   );
 }

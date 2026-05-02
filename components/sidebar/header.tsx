@@ -1,5 +1,5 @@
 import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import Link from "next/link";
 
 export default function Header() {
