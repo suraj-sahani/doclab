@@ -1,8 +1,11 @@
+import Header from "@/components/header";
 import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
 const geistMonoHeading = Geist_Mono({
   subsets: ["latin"],
@@ -41,7 +44,15 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>{children}</ClerkProvider>
+        <ClerkProvider>
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarInset>
+              {/*<Header />*/}
+              <main className="p-1 flex-1">{children}</main>
+            </SidebarInset>
+          </SidebarProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
