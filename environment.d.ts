@@ -1,0 +1,24 @@
+declare namespace NodeJS {
+  interface ProcessEnv {
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: string;
+    CLERK_SECRET_KEY: string;
+    NEXT_PUBLIC_FIREBASE_API_KEY: string;
+    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: string;
+    NEXT_PUBLIC_DATABASE_URL: string;
+    NEXT_PUBLIC_PROJECT_ID: string;
+    NEXT_PUBLIC_STORAGE_BUCKET: string;
+    NEXT_PUBLIC_MESSAGE_SENDER_ID: string;
+    NEXT_PUBLIC_APP_ID: string;
+    FIREBASE_ACC_TYPE: string;
+    FIREBASE_PROJECT_ID: string;
+    FIREBASE_PRIVATE_KEY_ID: string;
+    FIREBASE_PRIVATE_KEY: string;
+    FIREBASE_CLIENT_EMAIL: string;
+    FIREBASE_CLIENT_ID: string;
+    FIREBASE_AUTH_URI: string;
+    FIREBASE_TOKEN_URI: string;
+    FIREBASE_AUTH_CERT_URL: string;
+    FIREBASE_CLIENT_URL: string;
+    FIREBASE_DOMAIN: string;
+  }
+}
