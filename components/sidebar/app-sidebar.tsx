@@ -30,6 +30,11 @@ import {
 } from "@hugeicons/core-free-icons";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
+import { useCollection } from "react-firebase-hooks/firestore";
+import { collectionGroup, query, where } from "firebase/firestore";
+import { db } from "@/lib/firebase/client";
+import DocLink from "./doc-link";
+import { DocRef } from "@/lib/types";
 
 const data = {
   user: {
@@ -156,7 +161,22 @@ const data = {
 };
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, isLoaded } = useUser();
-  console.dir({ user, isLoaded });
+
+  const [queryData, loading, error] = useCollection(
+    user &&
+      query(
+        collectionGroup(db, "rooms"),
+        where("userId", "==", user.emailAddresses[0].emailAddress),
+      ),
+  );
+
+  const userDocs = queryData?.docs.map((doc) => doc.data()) || ([] as DocRef[]);
+
+  console.dir({
+    data: userDocs,
+    loading,
+    error: error?.message,
+  });
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -180,13 +200,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       {!isLoaded ? (
-        "Loading.."
+        <span className="text-xs">Loading..</span>
       ) : (
         <>
           <SidebarContent>
-            <NavMain items={data.navMain} />
+            {userDocs.map((doc) => (
+              <DocLink key={doc.roomId + doc.userId} docRef={doc as DocRef} />
+            ))}
+            {/*<NavMain items={data.navMain} />
             <NavProjects projects={data.projects} />
-            <NavSecondary items={data.navSecondary} className="mt-auto" />
+            <NavSecondary items={data.navSecondary} className="mt-auto" />*/}
           </SidebarContent>
           <SidebarFooter>
             <NavUser

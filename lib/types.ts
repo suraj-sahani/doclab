@@ -8,3 +8,14 @@ export interface User {
   email: string;
   imageUrl: string;
 }
+
+export interface DocRef {
+  createdAt: string;
+  role: "owner" | "editor";
+  roomId: string;
+  userId: string;
+}
+
+export interface DocumentInfo {
+  title: string;
+}
