@@ -2,9 +2,6 @@
 
 import * as React from "react";
 
-import { NavMain } from "@/components/sidebar/nav-main";
-import { NavProjects } from "@/components/sidebar/nav-projects";
-import { NavSecondary } from "@/components/sidebar/nav-secondary";
 import { NavUser } from "@/components/sidebar/nav-user";
 import {
   Sidebar,
@@ -15,26 +12,26 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { HugeiconsIcon } from "@hugeicons/react";
-import {
-  ComputerTerminalIcon,
-  RoboticIcon,
-  BookOpen02Icon,
-  Settings05Icon,
-  ChartRingIcon,
-  SentIcon,
-  CropIcon,
-  PieChartIcon,
-  MapsIcon,
-  CommandIcon,
-} from "@hugeicons/core-free-icons";
-import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
-import { useCollection } from "react-firebase-hooks/firestore";
-import { collectionGroup, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase/client";
-import DocLink from "./doc-link";
 import { DocRef } from "@/lib/types";
+import { useUser } from "@clerk/nextjs";
+import {
+  BookOpen02Icon,
+  ChartRingIcon,
+  CommandIcon,
+  ComputerTerminalIcon,
+  CropIcon,
+  MapsIcon,
+  PieChartIcon,
+  RoboticIcon,
+  SentIcon,
+  Settings05Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { collectionGroup, query, where } from "firebase/firestore";
+import Link from "next/link";
+import { useCollection } from "react-firebase-hooks/firestore";
+import DocLink from "./doc-link";
 
 const data = {
   user: {
@@ -207,9 +204,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {userDocs.map((doc) => (
               <DocLink key={doc.roomId + doc.userId} docRef={doc as DocRef} />
             ))}
-            {/*<NavMain items={data.navMain} />
-            <NavProjects projects={data.projects} />
-            <NavSecondary items={data.navSecondary} className="mt-auto" />*/}
           </SidebarContent>
           <SidebarFooter>
             <NavUser

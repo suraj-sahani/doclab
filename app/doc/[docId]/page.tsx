@@ -1,8 +1,10 @@
+import DocumentDetails from "@/components/document";
+
 export default async function Doc({
   params,
 }: {
   params: Promise<{ docId: string }>;
 }) {
   const { docId } = await params;
-  return <section>{docId}</section>;
+  return <DocumentDetails documentId={docId} />;
 }
