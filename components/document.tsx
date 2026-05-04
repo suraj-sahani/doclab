@@ -8,6 +8,7 @@ import { Field } from "./ui/field";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
+import Editor from "./editor";
 
 type Props = {
   documentId: string;
@@ -38,7 +39,7 @@ export default function DocumentDetails({ documentId }: Props) {
   };
 
   return (
-    <section className="max-w-7xl mx-auto h-screen">
+    <section className="max-w-7xl mx-auto h-full">
       <form className="flex space-x-2" onSubmit={handleTItleChange}>
         <Field orientation="horizontal">
           <Input
@@ -53,6 +54,8 @@ export default function DocumentDetails({ documentId }: Props) {
           </Button>
         </Field>
       </form>
+
+      <Editor />
     </section>
   );
 }

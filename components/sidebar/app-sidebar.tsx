@@ -169,12 +169,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const userDocs = queryData?.docs.map((doc) => doc.data()) || ([] as DocRef[]);
 
-  console.dir({
-    data: userDocs,
-    loading,
-    error: error?.message,
-  });
-
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
