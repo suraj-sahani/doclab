@@ -20,5 +20,7 @@ declare namespace NodeJS {
     FIREBASE_AUTH_CERT_URL: string;
     FIREBASE_CLIENT_URL: string;
     FIREBASE_DOMAIN: string;
+    NEXT_PUBLIC_LIVEBLOCKS_API_KEY: string;
+    LIVEBLOCKS_SECRET_KEY: string;
   }
 }
