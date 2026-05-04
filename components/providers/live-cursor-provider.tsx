@@ -19,6 +19,8 @@ export default function LiveCursorProvider({
     updateMyPresence({ cursor: null });
   };
 
+  console.log(othersPresence);
+
   return (
     <div onPointerMove={handlePointerMove} onPointerLeave={handlePointerLeave}>
       {children}

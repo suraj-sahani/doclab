@@ -38,7 +38,7 @@ export default function DocumentDetails({ documentId }: Props) {
   };
 
   return (
-    <section className="max-w-7xl mx-auto">
+    <section className="max-w-7xl mx-auto h-screen">
       <form className="flex space-x-2" onSubmit={handleTItleChange}>
         <Field orientation="horizontal">
           <Input

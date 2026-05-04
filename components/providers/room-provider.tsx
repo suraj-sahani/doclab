@@ -1,3 +1,4 @@
+"use client";
 import { ClientSideSuspense, RoomProvider } from "@liveblocks/react";
 import { type ReactNode } from "react";
 import { Spinner } from "../ui/spinner";
