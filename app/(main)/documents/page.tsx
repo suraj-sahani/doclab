@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { currentUser } from "@clerk/nextjs/server";
 import { PlusSignSquareIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import Image from "next/image";
+import CreateDocumentButton from "../_components/create-document-button";
 
 export default async function DocumentPage() {
   const user = await currentUser();
@@ -26,7 +26,7 @@ export default async function DocumentPage() {
       <h2 className="text-lg font-medium">
         Welcome to {user?.firstName}&apos;s Doclab
       </h2>
-      <Button>
+      <CreateDocumentButton>
         <HugeiconsIcon
           icon={PlusSignSquareIcon}
           size={24}
@@ -34,7 +34,7 @@ export default async function DocumentPage() {
           strokeWidth={1.5}
         />
         Create note
-      </Button>
+      </CreateDocumentButton>
     </div>
   );
 }
