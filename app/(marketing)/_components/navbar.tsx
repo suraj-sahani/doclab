@@ -2,13 +2,13 @@
 
 import { cn } from "@/lib/utils";
 
-// import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Show, SignInButton, SignUpButton } from "@clerk/nextjs";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight04Icon } from "@hugeicons/core-free-icons";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Navbar() {
   return (
@@ -44,7 +44,7 @@ export function Navbar() {
           </Link>
         </Show>
 
-        {/*<ModeToggle />*/}
+        <ThemeToggle />
       </div>
     </div>
   );
