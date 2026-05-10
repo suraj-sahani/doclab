@@ -2,43 +2,55 @@
 
 import * as React from "react";
 
+import { NavMain } from "@/components/sidebar/nav-main";
+import { NavProjects } from "@/components/sidebar/nav-projects";
 import { NavUser } from "@/components/sidebar/nav-user";
+import { TeamSwitcher } from "@/components/sidebar/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
-import { db } from "@/lib/firebase/client";
-import { DocRef } from "@/lib/types";
-import { useUser } from "@clerk/nextjs";
+import { HugeiconsIcon } from "@hugeicons/react";
 import {
-  BookOpen02Icon,
-  ChartRingIcon,
+  LayoutBottomIcon,
+  AudioWave01Icon,
   CommandIcon,
   ComputerTerminalIcon,
-  CropIcon,
-  MapsIcon,
-  PieChartIcon,
   RoboticIcon,
-  SentIcon,
+  BookOpen02Icon,
   Settings05Icon,
+  CropIcon,
+  PieChartIcon,
+  MapsIcon,
 } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { collectionGroup, query, where } from "firebase/firestore";
-import Link from "next/link";
-import { useCollection } from "react-firebase-hooks/firestore";
-import DocLink from "./doc-link";
 
+// This is sample data.
 const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
+  teams: [
+    {
+      name: "Acme Inc",
+      logo: <HugeiconsIcon icon={LayoutBottomIcon} strokeWidth={2} />,
+      plan: "Enterprise",
+    },
+    {
+      name: "Acme Corp.",
+      logo: <HugeiconsIcon icon={AudioWave01Icon} strokeWidth={2} />,
+      plan: "Startup",
+    },
+    {
+      name: "Evil Corp.",
+      logo: <HugeiconsIcon icon={CommandIcon} strokeWidth={2} />,
+      plan: "Free",
+    },
+  ],
   navMain: [
     {
       title: "Playground",
@@ -126,18 +138,6 @@ const data = {
       ],
     },
   ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: <HugeiconsIcon icon={ChartRingIcon} strokeWidth={2} />,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: <HugeiconsIcon icon={SentIcon} strokeWidth={2} />,
-    },
-  ],
   projects: [
     {
       name: "Design Engineering",
@@ -156,61 +156,21 @@ const data = {
     },
   ],
 };
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, isLoaded } = useUser();
-
-  const [queryData, loading, error] = useCollection(
-    user &&
-      query(
-        collectionGroup(db, "rooms"),
-        where("userId", "==", user.emailAddresses[0].emailAddress),
-      ),
-  );
-
-  const userDocs = queryData?.docs.map((doc) => doc.data()) || ([] as DocRef[]);
-
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<Link href="#" />}>
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <HugeiconsIcon
-                  icon={CommandIcon}
-                  strokeWidth={2}
-                  className="size-4"
-                />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">Doclab</span>
-              </div>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-
-      {!isLoaded ? (
-        <span className="text-xs">Loading..</span>
-      ) : (
-        <>
-          <SidebarContent>
-            {userDocs.map((doc) => (
-              <DocLink key={doc.roomId + doc.userId} docRef={doc as DocRef} />
-            ))}
-          </SidebarContent>
-          <SidebarFooter>
-            <NavUser
-              user={{
-                email: user?.emailAddresses[0]?.emailAddress || "",
-                first_name: user?.firstName || "",
-                last_name: user?.lastName || "",
-                imageUrl: user?.imageUrl || "",
-              }}
-            />
-          </SidebarFooter>
-        </>
-      )}
+      <SidebarContent>
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser user={data.user} />
+      </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }
