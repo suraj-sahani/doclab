@@ -2,15 +2,17 @@
 
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { toast } from "sonner";
 
 type CreateDocumentButtonProps = React.ComponentProps<typeof Button> & {
-  // onCreate: () => void;
+  parentDocumentId?: Id<"documents">;
 };
 
 export default function CreateDocumentButton({
   children,
+  parentDocumentId,
   ...props
 }: CreateDocumentButtonProps) {
   const createDocumentMutation = useMutation(api.documents.createDocument);
@@ -18,6 +20,7 @@ export default function CreateDocumentButton({
   const onCreate = async () => {
     const createPromise = createDocumentMutation({
       title: "Untitled",
+      parentDocument: parentDocumentId,
     });
 
     toast.promise(createPromise, {
@@ -29,7 +32,13 @@ export default function CreateDocumentButton({
   };
 
   return (
-    <Button {...props} onClick={() => onCreate()}>
+    <Button
+      {...props}
+      onClick={(e) => {
+        e?.stopPropagation();
+        onCreate();
+      }}
+    >
       {children}
     </Button>
   );

@@ -2,6 +2,7 @@ import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
+import { AccumulatedDoc } from "@/lib/types";
 
 export const createDocument = mutation({
   args: {
@@ -27,14 +28,8 @@ export const createDocument = mutation({
   },
 });
 
-interface AccumulatedDoc extends Doc<"documents"> {
-  childDocs: Doc<"documents">[];
-}
 export const getUserDocuments = query({
-  args: {
-    parentDocument: v.optional(v.id("documents")),
-  },
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) throw new Error("Unauthorized");
@@ -48,21 +43,30 @@ export const getUserDocuments = query({
       .order("desc")
       .collect();
 
-    const accumulatedDocs: AccumulatedDoc[] = [],
-      childDocSet = new Set<Id<"documents">>();
+    // 2. Create a Map for O(1) lookup and initialize the recursive structure
+    const docMap = new Map<string, AccumulatedDoc>();
 
     for (const doc of userDocuments) {
-      // find docs that have the parentDocument same as the document id
-      const childDocs = userDocuments.filter((d) => 
-          childDocSet.add(doc._id);
-        
-      });
-
-      accumulatedDocs.push({ ...doc, childDocs });
+      docMap.set(doc._id, { ...doc, childDocs: [] });
     }
 
+    const rootDocs: AccumulatedDoc[] = [];
 
+    // 3. Build the tree by reference
+    for (const docId of docMap.keys()) {
+      const doc = docMap.get(docId)!;
+      const parentId = doc.parentDocument;
 
-    return accumulatedDocs;
+      if (parentId && docMap.has(parentId)) {
+        // This is a child: add it to its parent's childDocs array
+        // Because we are using references, this works for any depth
+        docMap.get(parentId)!.childDocs.push(doc);
+      } else {
+        // This is a root document (no parent or parent is archived/missing)
+        rootDocs.push(doc);
+      }
+    }
+
+    return rootDocs;
   },
 });
