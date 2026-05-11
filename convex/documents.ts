@@ -26,3 +26,43 @@ export const createDocument = mutation({
     return document;
   },
 });
+
+interface AccumulatedDoc extends Doc<"documents"> {
+  childDocs: Doc<"documents">[];
+}
+export const getUserDocuments = query({
+  args: {
+    parentDocument: v.optional(v.id("documents")),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) throw new Error("Unauthorized");
+
+    const userId = identity.subject;
+
+    const userDocuments = await ctx.db
+      .query("documents")
+      .withIndex("by_user_parent", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .order("desc")
+      .collect();
+
+    const accumulatedDocs: AccumulatedDoc[] = [],
+      childDocSet = new Set<Id<"documents">>();
+
+    for (const doc of userDocuments) {
+      // find docs that have the parentDocument same as the document id
+      const childDocs = userDocuments.filter((d) => 
+          childDocSet.add(doc._id);
+        
+      });
+
+      accumulatedDocs.push({ ...doc, childDocs });
+    }
+
+
+
+    return accumulatedDocs;
+  },
+});

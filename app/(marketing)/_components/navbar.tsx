@@ -17,7 +17,9 @@ export function Navbar() {
         `bg-background dark:bg-[#1F1F1F] flex items-center w-full p-4`,
       )}
     >
-      <Logo />
+      <Link href={"/"}>
+        <Logo />
+      </Link>
       <div className="md:ml-auto md:justify-end flex gap-x-2 justify-between items-center w-full">
         <Show when={"signed-out"}>
           <SignInButton mode="modal">
