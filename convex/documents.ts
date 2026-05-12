@@ -60,7 +60,8 @@ export const getUserDocuments = query({
       if (parentId && docMap.has(parentId)) {
         // This is a child: add it to its parent's childDocs array
         // Because we are using references, this works for any depth
-        docMap.get(parentId)!.childDocs.push(doc);
+        const currentDoc = docMap.get(parentId)!;
+        currentDoc.childDocs.push(doc);
       } else {
         // This is a root document (no parent or parent is archived/missing)
         rootDocs.push(doc);
@@ -68,5 +69,52 @@ export const getUserDocuments = query({
     }
 
     return rootDocs;
+  },
+});
+
+export const archiveDoc = mutation({
+  args: {
+    id: v.id("documents"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) throw new Error("Unauthorized");
+
+    const userId = identity.subject;
+
+    const existingDoc = await ctx.db.get("documents", args.id);
+
+    if (!existingDoc) throw new Error("Document not found");
+
+    if (existingDoc.userId !== userId) throw new Error("Unauthorized");
+
+    // We also need to archive all the child docs of the current doc.
+    const recursiveArchive = async (docId: Id<"documents">) => {
+      // Get all children docs for a particular doc ID
+      const children = await ctx.db
+        .query("documents")
+        .withIndex("by_user_parent", (q) =>
+          q.eq("userId", userId).eq("parentDocument", docId),
+        )
+        .collect();
+
+      // Update every single child doc
+      for (const child of children) {
+        await ctx.db.patch("documents", child._id, { isArchived: true });
+
+        // Do the same thing if this child also has its own children docs
+        await recursiveArchive(child._id);
+      }
+    };
+
+    // Archive the current doc
+    const updatedDoc = await ctx.db.patch("documents", args.id, {
+      isArchived: true,
+    });
+
+    await recursiveArchive(args.id);
+
+    return updatedDoc;
   },
 });

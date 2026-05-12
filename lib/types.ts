@@ -5,5 +5,5 @@ export type Action<T> =
   | Promise<{ success: false; error: string }>;
 
 export interface AccumulatedDoc extends Doc<"documents"> {
-  childDocs?: Doc<"documents">[];
+  childDocs: Doc<"documents">[];
 }
