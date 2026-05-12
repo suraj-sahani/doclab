@@ -3,7 +3,9 @@ import CreateDocumentButton from "@/app/(main)/_components/create-document-butto
 import { AccumulatedDoc } from "@/lib/types"; // Ensure this matches your recursive type
 import {
   ArrowRight01Icon,
+  Delete03Icon,
   File01Icon,
+  MoreHorizontalIcon,
   PlusSignSquareIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -18,6 +20,22 @@ import {
   SidebarMenuSub,
 } from "../ui/sidebar";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { useUser } from "@clerk/nextjs";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
+import { BaseUIEvent } from "@base-ui/react";
+import { MouseEvent } from "react";
 
 type Props = {
   doc: AccumulatedDoc;
@@ -25,8 +43,23 @@ type Props = {
 };
 
 export default function DocumentListItem({ doc, level = 0 }: Props) {
+  const { user } = useUser();
   const hasChildren = doc?.childDocs && doc?.childDocs?.length > 0;
+  const archiveDoc = useMutation(api.documents.archiveDoc);
 
+  const handleArchive = (
+    event: BaseUIEvent<MouseEvent<HTMLDivElement, globalThis.MouseEvent>>,
+  ) => {
+    event.stopPropagation();
+    const archivePromise = archiveDoc({ id: doc._id });
+
+    toast.promise(archivePromise, {
+      success: "Document archived successfully.",
+      loading: "Moving to trash...",
+      error: (err) =>
+        err instanceof Error ? err.message : "Failed to archive document",
+    });
+  };
   return (
     <Collapsible
       key={doc._id}
@@ -38,11 +71,13 @@ export default function DocumentListItem({ doc, level = 0 }: Props) {
         style={{ paddingLeft: `${level * 2}px` }} // Manual indentation control
       >
         <CollapsibleTrigger
+          nativeButton={false}
           render={
             <SidebarMenuButton
               size={"xs"}
               tooltip={doc.title}
               className="flex-1 overflow-hidden"
+              render={<div />}
             >
               {/* Chevron: only show if has children, or always show but hide icon if empty */}
               <HugeiconsIcon
@@ -67,7 +102,45 @@ export default function DocumentListItem({ doc, level = 0 }: Props) {
               <span className="truncate font-medium">{doc.title}</span>
 
               {/* Add Page Button: Visible on row hover */}
-              <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="ml-auto flex items-center gap-x-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <Button
+                        size={"icon-xs"}
+                        variant="ghost"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <HugeiconsIcon
+                          icon={MoreHorizontalIcon}
+                          size={24}
+                          color="currentColor"
+                          strokeWidth={1.5}
+                        />
+                      </Button>
+                    }
+                  />
+                  <DropdownMenuContent className={"w-fit"}>
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem
+                        className={"text-xs"}
+                        onClick={handleArchive}
+                      >
+                        <HugeiconsIcon
+                          icon={Delete03Icon}
+                          size={24}
+                          color="currentColor"
+                          strokeWidth={1.5}
+                        />
+                        Delete
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem className={"text-xs"} disabled>
+                        Last edited by: {user?.fullName}
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <CreateDocumentButton
                   variant={"ghost"}
                   size={"icon-sm"}
