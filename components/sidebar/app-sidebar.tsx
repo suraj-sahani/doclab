@@ -7,20 +7,20 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  SidebarGroup,
   SidebarHeader,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { useUser } from "@clerk/nextjs";
+import { Authenticated, AuthLoading } from "convex/react";
 import Link from "next/link";
 import { Logo } from "../logo";
-import { Skeleton } from "../ui/skeleton";
 import DocumentList from "./document-list";
+import DocumentSkeleton from "./document-skeleton";
+import Trash from "./trash";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const user = useUser();
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -31,20 +31,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenuItem>
       </SidebarHeader>
       <SidebarContent>
-        <DocumentList />
+        <Authenticated>
+          <DocumentList />
+          <Trash />
+        </Authenticated>
+        <AuthLoading>
+          <SidebarGroup className="space-y-2">
+            <DocumentSkeleton />
+          </SidebarGroup>
+        </AuthLoading>
       </SidebarContent>
       <SidebarFooter>
-        {user.isLoaded ? (
-          <NavUser
-            user={{
-              name: user?.user?.fullName || "",
-              email: user?.user?.emailAddresses?.[0]?.emailAddress || "",
-              avatar: user?.user?.imageUrl || "",
-            }}
-          />
-        ) : (
-          <Skeleton className="h-15 w-full" />
-        )}
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
