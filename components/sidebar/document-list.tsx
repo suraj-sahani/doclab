@@ -2,37 +2,32 @@
 
 import CreateDocumentButton from "@/app/(main)/_components/create-document-button";
 import {
-  SidebarContent,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 import { PlusSignSquareIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "convex/react";
-import { Skeleton } from "../ui/skeleton";
 import DocumentListItem from "./document-list-item";
+import DocumentSkeleton from "./document-skeleton";
 
 export default function DocumentList() {
   const docs = useQuery(api.documents.getUserDocuments);
 
   if (docs === undefined)
     return (
-      <SidebarContent className="space-y-2 px-2 mt-4">
-        {Array.from({ length: 5 }, (_, index) => index).map((i) => (
-          <Skeleton key={i} className="h-6 w-full" />
-        ))}
-      </SidebarContent>
+      <SidebarGroup className="space-y-2">
+        <DocumentSkeleton />
+      </SidebarGroup>
     );
 
-  console.dir({ docs }, { depth: null });
   return (
     <SidebarGroup>
       <SidebarGroupLabel>My Documents</SidebarGroupLabel>
       <SidebarMenu>
-        {docs.map((item) => {
+        {docs?.map((item) => {
           return <DocumentListItem doc={item} key={item._id} level={0} />;
         })}
 
