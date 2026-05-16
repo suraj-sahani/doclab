@@ -84,14 +84,15 @@ export default function Trash() {
       <Popover>
         <PopoverTrigger
           render={
-            <Button variant="ghost" size={"xs"} className={"justify-start"}>
-              Trash{" "}
+            <Button variant="ghost" size={"sm"} className={"justify-start"}>
               <HugeiconsIcon
                 icon={Delete02Icon}
-                size={24}
+                size={16}
                 color="currentColor"
-                strokeWidth={1.5}
+                strokeWidth={2}
+                className="size-4"
               />
+              Trash
             </Button>
           }
         />
@@ -106,9 +107,9 @@ export default function Trash() {
             <InputGroupAddon>
               <HugeiconsIcon
                 icon={Search01Icon}
-                size={24}
+                size={16}
                 color="currentColor"
-                strokeWidth={1.5}
+                strokeWidth={2}
               />
             </InputGroupAddon>
             <InputGroupAddon align="inline-end">
@@ -132,7 +133,7 @@ export default function Trash() {
                   <span className="truncate pl-2">{document.title}</span>
                   <div className="flex items-center gap-0.5">
                     <Button
-                      size={"xs"}
+                      size={"icon-xs"}
                       render={<div role="button" />}
                       nativeButton={false}
                       variant={"ghost"}
@@ -140,6 +141,7 @@ export default function Trash() {
                         e.stopPropagation();
                         handleRestore(document._id);
                       }}
+                      className={"hover:bg-accent/10"}
                     >
                       <HugeiconsIcon
                         icon={UndoIcon}
@@ -159,6 +161,7 @@ export default function Trash() {
                             size={"icon-xs"}
                             render={<div role="button" />}
                             nativeButton={false}
+                            className={"hover:bg-accent/10"}
                           >
                             <HugeiconsIcon
                               icon={Delete02Icon}

@@ -33,16 +33,11 @@ export default function DocumentList() {
 
         <CreateDocumentButton
           variant={"ghost"}
-          size={"sm"}
-          className={"justify-start text-xs"}
+          size={"icon-sm"}
+          className={"h-6 gap-2 w-full justify-start p-2"}
         >
-          <HugeiconsIcon
-            icon={PlusSignSquareIcon}
-            size={24}
-            color="currentColor"
-            strokeWidth={1.5}
-          />
-          New Page
+          <HugeiconsIcon icon={PlusSignSquareIcon} size={16} strokeWidth={2} />
+          New Document
         </CreateDocumentButton>
       </SidebarMenu>
     </SidebarGroup>

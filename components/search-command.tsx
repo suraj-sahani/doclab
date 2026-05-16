@@ -22,7 +22,10 @@ import { useEffect, useState } from "react";
 export default function SearchCommand() {
   const { user } = useUser();
   const router = useRouter();
-  const documents = useQuery(api.documents.getSearchedDocuments);
+  const documents = useQuery(
+    api.documents.getSearchedDocuments,
+    user ? {} : "skip",
+  );
   const [isMounted, setIsMounted] = useState(false);
 
   const toggle = useSearchStore((store) => store.toggle);

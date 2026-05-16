@@ -35,7 +35,8 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { BaseUIEvent } from "@base-ui/react";
-import { MouseEvent } from "react";
+import { MouseEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   doc: AccumulatedDoc;
@@ -44,6 +45,8 @@ type Props = {
 
 export default function DocumentListItem({ doc, level = 0 }: Props) {
   const { user } = useUser();
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
   const hasChildren = doc?.childDocs && doc?.childDocs?.length > 0;
   const archiveDoc = useMutation(api.documents.archiveDoc);
 
@@ -65,6 +68,8 @@ export default function DocumentListItem({ doc, level = 0 }: Props) {
       key={doc._id}
       className="group/collapsible w-full"
       render={<SidebarMenuItem />}
+      open={open}
+      onOpenChange={setOpen}
     >
       <div
         className="flex items-center gap-1 group"
@@ -72,6 +77,10 @@ export default function DocumentListItem({ doc, level = 0 }: Props) {
       >
         <CollapsibleTrigger
           nativeButton={false}
+          onClick={(e) => {
+            e.stopPropagation();
+            // router.push(`/documents/${doc._id}`);
+          }}
           render={
             <SidebarMenuButton
               size={"xs"}
@@ -79,15 +88,24 @@ export default function DocumentListItem({ doc, level = 0 }: Props) {
               className="flex-1 overflow-hidden"
               render={<div />}
             >
-              {/* Chevron: only show if has children, or always show but hide icon if empty */}
-              <HugeiconsIcon
-                icon={ArrowRight01Icon}
-                strokeWidth={2}
-                className={cn(
-                  "h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90",
-                  !hasChildren && "opacity-0", // Hide chevron if no children but keep space
-                )}
-              />
+              <Button
+                variant={"ghost"}
+                size={"icon-xs"}
+                className="hover:bg-accent/10"
+              >
+                <HugeiconsIcon
+                  icon={ArrowRight01Icon}
+                  strokeWidth={2}
+                  className={cn(
+                    "h-4 w-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90",
+                    !hasChildren && "opacity-0", // Hide chevron if no children but keep space
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpen((prev) => !prev);
+                  }}
+                />
+              </Button>
 
               {/* Document Icon or Default File Icon */}
               <span className="shrink-0">
@@ -109,6 +127,7 @@ export default function DocumentListItem({ doc, level = 0 }: Props) {
                       <Button
                         size={"icon-xs"}
                         variant="ghost"
+                        className={"hover:bg-accent/10"}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <HugeiconsIcon
@@ -144,7 +163,7 @@ export default function DocumentListItem({ doc, level = 0 }: Props) {
                 <CreateDocumentButton
                   variant={"ghost"}
                   size={"icon-sm"}
-                  className={"h-6 w-6 hover:bg-accent"}
+                  className={"h-6 w-6 hover:bg-accent/10"}
                   parentDocumentId={doc._id}
                 >
                   <HugeiconsIcon

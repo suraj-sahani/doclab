@@ -42,13 +42,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroup>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="justify-between" onClick={toggle}>
+                <SidebarMenuButton
+                  className="justify-between font-medium"
+                  onClick={toggle}
+                  size={"xs"}
+                >
                   <div className="flex items-center gap-2">
                     <HugeiconsIcon
                       icon={Search01Icon}
                       size={24}
                       color="currentColor"
-                      strokeWidth={1.5}
+                      strokeWidth={2}
                     />
                     Search
                   </div>
@@ -56,13 +60,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton onClick={openSettings}>
+                <SidebarMenuButton
+                  className="font-medium"
+                  onClick={openSettings}
+                  size={"xs"}
+                >
                   {" "}
                   <HugeiconsIcon
                     icon={Settings01Icon}
                     size={24}
                     color="currentColor"
-                    strokeWidth={1.5}
+                    strokeWidth={2}
                   />
                   Settings
                 </SidebarMenuButton>
