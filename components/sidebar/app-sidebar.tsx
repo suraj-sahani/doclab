@@ -23,10 +23,11 @@ import Trash from "./trash";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon, Settings01Icon } from "@hugeicons/core-free-icons";
 import { Kbd } from "../ui/kbd";
-import { useSearchStore } from "@/lib/store";
+import { useSearchStore, useSettingsStore } from "@/lib/store";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const toggle = useSearchStore((store) => store.toggle);
+  const openSettings = useSettingsStore((store) => store.onOpen);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -55,7 +56,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton>
+                <SidebarMenuButton onClick={openSettings}>
                   {" "}
                   <HugeiconsIcon
                     icon={Settings01Icon}
