@@ -9,6 +9,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
+  SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
@@ -19,8 +20,13 @@ import { Logo } from "../logo";
 import DocumentList from "./document-list";
 import DocumentSkeleton from "./document-skeleton";
 import Trash from "./trash";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Search01Icon, Settings01Icon } from "@hugeicons/core-free-icons";
+import { Kbd } from "../ui/kbd";
+import { useSearchStore } from "@/lib/store";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const toggle = useSearchStore((store) => store.toggle);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -32,6 +38,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <Authenticated>
+          <SidebarGroup>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton className="justify-between" onClick={toggle}>
+                  <div className="flex items-center gap-2">
+                    <HugeiconsIcon
+                      icon={Search01Icon}
+                      size={24}
+                      color="currentColor"
+                      strokeWidth={1.5}
+                    />
+                    Search
+                  </div>
+                  <Kbd>⌘ K</Kbd>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton>
+                  {" "}
+                  <HugeiconsIcon
+                    icon={Settings01Icon}
+                    size={24}
+                    color="currentColor"
+                    strokeWidth={1.5}
+                  />
+                  Settings
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
           <DocumentList />
           <Trash />
         </Authenticated>
