@@ -225,3 +225,24 @@ export const getSearchedDocuments = query({
     return documents;
   },
 });
+
+export const getDocumentById = query({
+  args: {
+    docId: v.id("documents"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) throw new Error("Unauthorized");
+
+    const userId = identity.subject;
+
+    const doc = await ctx.db.get("documents", args.docId);
+
+    if (!doc) throw new Error("Document not found!");
+
+    if (doc.userId !== userId) throw new Error("Unauthorized");
+
+    return doc;
+  },
+});
