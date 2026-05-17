@@ -10,7 +10,7 @@ import {
   ImageCounterClockwiseIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import Image from "next/image";
 
 type Props = {
@@ -19,7 +19,8 @@ type Props = {
 };
 export default function DocumentCover({ docId, storageId }: Props) {
   const openCoverImage = useConverImageStore((store) => store.onOpen);
-
+  const updateDoc = useMutation(api.documents.updateDoc);
+  const deleteCover = useMutation(api.documents.deleteCoverImage);
   const imageUrl = useQuery(
     api.documents.getFileUrl,
     storageId ? { storageId } : "skip",
@@ -27,6 +28,10 @@ export default function DocumentCover({ docId, storageId }: Props) {
 
   if (!storageId) return null;
   if (imageUrl === undefined) return <Skeleton className="w-full h-100" />;
+
+  const handleRemoveCover = () => {
+    deleteCover({ docId });
+  };
 
   return (
     <div className="relative group/cover">
@@ -48,7 +53,7 @@ export default function DocumentCover({ docId, storageId }: Props) {
           />{" "}
           Change Cover
         </Button>
-        <Button variant={"destructive"}>
+        <Button variant={"destructive"} onClick={handleRemoveCover}>
           <HugeiconsIcon
             icon={Cancel01Icon}
             size={24}

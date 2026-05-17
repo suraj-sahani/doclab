@@ -239,7 +239,7 @@ export const getDocumentById = query({
 
     const doc = await ctx.db.get("documents", args.docId);
 
-    if (!doc) throw new Error("Document not found!");
+    if (!doc) return null;
 
     if (doc.userId !== userId) throw new Error("Unauthorized");
 
@@ -309,5 +309,38 @@ export const getFileUrl = query({
     const url = await ctx.storage.getUrl(args.storageId);
 
     return { url };
+  },
+});
+
+export const deleteCoverImage = mutation({
+  args: { docId: v.id("documents") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Unauthorized");
+    }
+
+    const userId = identity.subject;
+
+    const existingDocument = await ctx.db.get(args.docId);
+
+    if (!existingDocument) {
+      throw new Error("Not found");
+    }
+
+    if (existingDocument.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    const imageId = existingDocument.coverImage;
+
+    if (!imageId) throw new Error("No image to delete");
+
+    await ctx.db.patch("documents", args.docId, {
+      coverImage: undefined,
+    });
+
+    await ctx.storage.delete(imageId);
   },
 });
