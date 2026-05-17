@@ -78,7 +78,6 @@ export default function Trash() {
     }
   };
 
-  console.log(archivedDocs);
   return (
     <SidebarGroup>
       <Popover>

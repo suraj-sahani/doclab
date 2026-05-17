@@ -1,4 +1,3 @@
-import { SidebarContent } from "../ui/sidebar";
 import { Skeleton } from "../ui/skeleton";
 
 export default function DocumentSkeleton() {
