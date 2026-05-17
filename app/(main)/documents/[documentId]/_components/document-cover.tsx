@@ -5,6 +5,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useConverImageStore } from "@/lib/store";
+import {
+  Cancel01Icon,
+  ImageCounterClockwiseIcon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { useQuery } from "convex/react";
 import Image from "next/image";
 
@@ -21,7 +26,7 @@ export default function DocumentCover({ docId, storageId }: Props) {
   );
 
   if (!storageId) return null;
-  if (imageUrl === undefined) return <Skeleton className="w-full h-125" />;
+  if (imageUrl === undefined) return <Skeleton className="w-full h-100" />;
 
   return (
     <div className="relative group/cover">
@@ -35,9 +40,23 @@ export default function DocumentCover({ docId, storageId }: Props) {
 
       <div className="opacity-0 flex items-center gap-2 absolute bottom-5 right-5 group-hover/cover:opacity-100 transition-opacity duration-200">
         <Button variant={"outline"} onClick={openCoverImage}>
+          <HugeiconsIcon
+            icon={ImageCounterClockwiseIcon}
+            size={24}
+            color="currentColor"
+            strokeWidth={1.5}
+          />{" "}
           Change Cover
         </Button>
-        <Button variant={"destructive"}>Remove Cover</Button>
+        <Button variant={"destructive"}>
+          <HugeiconsIcon
+            icon={Cancel01Icon}
+            size={24}
+            color="currentColor"
+            strokeWidth={1.5}
+          />
+          Remove Cover
+        </Button>
       </div>
     </div>
   );
